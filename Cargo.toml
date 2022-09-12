@@ -1,0 +1,12 @@
+[package]
+name = "gd-image-to-text"
+version = "1.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+image = { version = "0.24.3", default-features = false, features = ["png", "jpeg"] }
+base64 = "0.13.0"
+flate2 = "1.0"
+rfd = "0.10.0"
