@@ -1,8 +1,10 @@
 # gd-image-to-text
 
+[![](https://img.shields.io/badge/download-here-green)](https://github.com/matcool/gd-image-to-text/releases)
+
 Geometry Dash image to text conversion tool using multiline text objects
 
-![image](https://user-images.githubusercontent.com/26722564/189576216-bddd63d7-4b47-4464-b9f5-1178d16bf330.png)
+<img width="70%" src=https://user-images.githubusercontent.com/26722564/189576216-bddd63d7-4b47-4464-b9f5-1178d16bf330.png />
 
 This tool outputs a .gmd file which you can import using [GDShare](https://github.com/HJfod/GDShare-mod/)
 
