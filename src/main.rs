@@ -271,7 +271,7 @@ fn main() {
 	let level_string = base64::encode_config(encoder.finish().unwrap(), base64::URL_SAFE);
 
 	let description =
-		base64::encode_config("Generated using gd-image-to-text 1.0.0", base64::URL_SAFE);
+		base64::encode_config("Generated using gd-image-to-text 1.1.0", base64::URL_SAFE);
 	// base64 it twice, because hjfod
 	let description = base64::encode_config(description, base64::URL_SAFE);
 

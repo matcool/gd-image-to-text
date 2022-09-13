@@ -22,6 +22,7 @@ Options:
     -s, --size <size>       Size for the image in *characters*, given in "WxH" format,
                             if not specified will use the image's actual width and height.
                             Keep in mind GD characters are about twice as tall as their width
+    --scale <scale>         Scale for the text objects, defaults to 0.075
 ```
 
 ## todo:
