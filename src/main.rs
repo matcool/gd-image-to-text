@@ -89,18 +89,14 @@ fn main() {
 				}
 			}
 			"-s" | "--size" => {
-				let arg = args_iter.next();
-				if arg.is_none() {
+				let arg = args_iter.next().unwrap_or_else(|| {
 					eprintln!("err: Expected width and height to --size");
 					show_help()
-				}
-				let arg = arg.unwrap();
-				let split = arg.split_once('x');
-				if split.is_none() {
+				});
+				let split = arg.split_once('x').unwrap_or_else(|| {
 					eprintln!("err: Size must be in \"WxH\" format");
 					show_help();
-				}
-				let split = split.unwrap();
+				});
 				let check = |_| {
 					eprintln!("err: Invalid size");
 					show_help();
@@ -110,12 +106,11 @@ fn main() {
 				user_size = Some((width, height));
 			}
 			"--scale" => {
-				let arg = args_iter.next();
-				if arg.is_none() {
+				let arg = args_iter.next().unwrap_or_else(|| {
 					eprintln!("err: Expected scale");
 					show_help()
-				}
-				object_scale = arg.unwrap().parse().unwrap_or_else(|_| {
+				});
+				object_scale = arg.parse().unwrap_or_else(|_| {
 					eprintln!("err: Invalid scale");
 					show_help()
 				});
@@ -129,11 +124,10 @@ fn main() {
 			}
 		}
 	}
-	if path.is_none() {
+	let path = path.unwrap_or_else(|| {
 		eprintln!("err: Expected path");
 		show_help();
-	}
-	let path = path.unwrap();
+	});
 
 	let mut img = image::open(&path)
 		.unwrap_or_else(|_| {
