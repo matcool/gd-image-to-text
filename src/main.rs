@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::Write};
 
 use flate2::{write::GzEncoder, Compression};
-use image::{imageops::FilterType, GenericImageView, Pixel, Rgb, RgbImage};
+use image::{buffer::ConvertBuffer, imageops::FilterType, GenericImageView, Pixel, Rgb, RgbImage};
 
 fn floyd_steinberg_dither<C: Fn(Rgb<u8>) -> Rgb<u8>>(img: &mut RgbImage, color_pred: C) {
 	for y in 0..img.height() {
@@ -122,7 +122,19 @@ fn main() {
 	}
 	let path = path.unwrap();
 
-	let img = image::open(path).unwrap();
+	let mut img = image::open(&path)
+		.unwrap_or_else(|_| {
+			eprintln!("err: Could not open image: {path}");
+			std::process::exit(1)
+		})
+		.to_rgba8();
+	// multiply alpha into color
+	// essentially adding a black background to transparent images
+	img.pixels_mut().for_each(|pixel| {
+		let alpha = pixel.0[3] as u16;
+		pixel.apply_without_alpha(|x| ((x as u16 * alpha) / 255) as u8);
+	});
+	let img = image::DynamicImage::ImageRgb8(img.convert());
 
 	let characters = HashMap::from([
 		((1.00 * 255.0) as u8, "O"),
@@ -196,9 +208,11 @@ fn main() {
 
 	let mut layers;
 	let mut size = user_size.unwrap_or_else(|| img.dimensions());
-	// characters have an aspect ratio of about 1:2
-	// so do this to keep aspect ratio in gd close to original image
-	size.1 /= 2;
+	if user_size.is_none() {
+		// characters have an aspect ratio of about 1:2
+		// so do this to keep aspect ratio in gd close to original image
+		size.1 /= 2;
+	}
 	loop {
 		layers = process_image(
 			img.resize_exact(size.0, size.1, FilterType::Nearest)
