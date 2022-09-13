@@ -27,6 +27,24 @@ Options:
     --scale <scale>         Scale for the text objects, defaults to 0.075
 ```
 
+# FAQ
+
+## How does this work?
+
+Text objects in gd actually support multiline text, and by using characters of similar widths we can abuse this to create ascii art from an image. this tool creates a text object for every color channel (R, G, B) and uses blending to combine them
+
+## Why can't it be higher resolution?
+
+The batch nodes that render all the characters have a limit of 16384 instances. GD has each z layer in a separate batch node so we can use this to have each text object in a separate z layer. \
+It's not possible to have a higher resolution by adding more text objects as any characters past the 16384 will simply not render at all, despite being in a different object \
+There's still 4 more z layers i could use, however that would make the code more complicated and i think 3 objects is a nice object count :-)
+
+## Is this better than previous methods such as Geometrize?
+
+In terms of object count definitely, but in many other aspects, no. \
+Not only does this require you to use font 10, it's also incredibly laggy when moving the object and the text objects use a considerable amount of memory
+
+
 ## todo:
 
 - higher color quality by using 3 extra z layers
