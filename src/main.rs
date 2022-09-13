@@ -59,6 +59,7 @@ Options:
     -s, --size <size>       Size for the image in *characters*, given in \"WxH\" format,
                             if not specified will use the image's actual width and height.
                             Keep in mind GD characters are about twice as tall as their width
+    --scale <scale>         Scale for the text objects, defaults to 0.075
 "
 	);
 	std::process::exit(1)
@@ -74,6 +75,7 @@ fn main() {
 	let mut output_path = None;
 	let mut args_iter = std::env::args().skip(1);
 	let mut user_size: Option<(u32, u32)> = None;
+	let mut object_scale = 0.075;
 	while let Some(arg) = args_iter.next() {
 		match arg.as_str() {
 			"-g" | "--grayscale" => {
@@ -106,6 +108,17 @@ fn main() {
 				let width = split.0.parse::<u32>().unwrap_or_else(check);
 				let height = split.1.parse::<u32>().unwrap_or_else(check);
 				user_size = Some((width, height));
+			}
+			"--scale" => {
+				let arg = args_iter.next();
+				if arg.is_none() {
+					eprintln!("err: Expected scale");
+					show_help()
+				}
+				object_scale = arg.unwrap().parse().unwrap_or_else(|_| {
+					eprintln!("err: Invalid scale");
+					show_help()
+				});
 			}
 			_ => {
 				if path.is_some() {
@@ -251,11 +264,10 @@ fn main() {
 		let b64_text = base64::encode_config(layer, base64::URL_SAFE);
 		let x = 285.0;
 		let y = 150.0;
-		let scale = 0.075;
 		let z_layer = i as i32 * 2 - 3; // uses layers B4, B3 and B2
 		let color_1 = if grayscale { 1 } else { i + 2 };
 		level_string.push_str(
-			format!(";1,914,2,{x},3,{y},31,{b64_text},32,{scale},21,{color_1},24,{z_layer}")
+			format!(";1,914,2,{x},3,{y},31,{b64_text},32,{object_scale},21,{color_1},24,{z_layer}")
 				.as_str(),
 		);
 	}
